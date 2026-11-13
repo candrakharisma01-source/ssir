@@ -4,19 +4,14 @@ session_start();
 include 'koneksi.php';
 
 if (isset($_POST['register'])) {
-
-    $username = trim($_POST['username']);
+    $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $role = 'pelanggan';
 
     $query = mysqli_prepare($conn,
-        "INSERT INTO user (username, password, role)
-         VALUES (?, ?, ?)"
+        "INSERT INTO user (username, password) VALUES (?, ?)"
     );
 
-    mysqli_stmt_bind_param($query, "sss",
-        $username, $password, $role
-    );
+    mysqli_stmt_bind_param($query, "ss", $username, $password);
 
     if (mysqli_stmt_execute($query)) {
         echo "<script>
@@ -27,9 +22,7 @@ if (isset($_POST['register'])) {
     } else {
         echo "<script>
             alert('Registrasi gagal! Username mungkin sudah digunakan.');
-            window.location='register.php';
         </script>";
-        exit;
     }
 }
 ?>
