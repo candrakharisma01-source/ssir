@@ -22,7 +22,6 @@ if (isset($_POST['login'])) {
 
         $storedPassword = $data['password'];
 
-        // Cek password hash atau password lama (teks biasa)
         $validPassword = password_verify(
             $password,
             $storedPassword
@@ -31,7 +30,6 @@ if (isset($_POST['login'])) {
         if (!$validPassword && hash_equals($storedPassword, $password)) {
             $validPassword = true;
 
-            // Ubah password lama menjadi hash
             $newHash = password_hash($password, PASSWORD_DEFAULT);
 
             $update = mysqli_prepare($conn,

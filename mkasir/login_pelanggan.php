@@ -26,13 +26,11 @@ if (isset($_POST['login'])) {
 
         $storedPassword = $data['password'];
 
-        // Cek password
         $validPassword = password_verify(
             $password,
             $storedPassword
         );
 
-        // Jika password masih teks biasa
         if (!$validPassword &&
             hash_equals($storedPassword, $password)) {
 
@@ -55,7 +53,6 @@ if (isset($_POST['login'])) {
             mysqli_stmt_close($update);
         }
 
-        // Cek role pelanggan
         if ($validPassword &&
             trim($data['role']) === 'pelanggan') {
 
