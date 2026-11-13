@@ -1,39 +1,65 @@
+
+<?php
+session_start();
+include 'koneksi.php';
+
+if (isset($_POST['register'])) {
+
+    $username = trim($_POST['username']);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $role = 'pelanggan';
+
+    $query = mysqli_prepare($conn,
+        "INSERT INTO user (username, password, role)
+         VALUES (?, ?, ?)"
+    );
+
+    mysqli_stmt_bind_param($query, "sss",
+        $username, $password, $role
+    );
+
+    if (mysqli_stmt_execute($query)) {
+        echo "<script>
+            alert('Registrasi berhasil! Silakan login.');
+            window.location='index.php';
+        </script>";
+        exit;
+    } else {
+        echo "<script>
+            alert('Registrasi gagal! Username mungkin sudah digunakan.');
+            window.location='register.php';
+        </script>";
+        exit;
+    }
+}
+?>
+
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Registrasi User - Aplikasi Kasir</title>
+    <title>Registrasi</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="card">
-        <h2>Registrasi</h2>
-        <?php if (!empty($pesan)) : ?>
-            <div class="success"><?= $pesan; ?></div>
-        <?php endif; ?>
+<div class="main">
+    <h2>Registrasi Akun</h2>
 
-        <form action="" method="POST">
-            <div class="form-group">
-                <label>Username</label>
-                <input style="text-align: center; margin-top: 15px; type="text name="username" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input style="text-align: center; margin-top: 15px; type="password name="password" required>
-            </div>
-            <div class="form-group">
-                <label>Role :</label>
-                <select style="text-align: center; margin-top: 15px; name="role>
-                    <option value="petugas">Petugas</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            <button style="text-align: center; margin-top: 15px; type="submit name="register" class="btn-success">Simpan User</button>
-        </form>
-        
-        <p style="text-align: center; margin-top: 15px;"><a href="index.php">Kembali</a></p>
-    </div>
+    <form method="POST">
+        <input type="text" name="username"
+        placeholder="Username" required>
+
+        <input type="password" name="password"
+        placeholder="Password" required>
+
+        <button type="submit" name="register">
+            Daftar
+        </button>
+    </form>
+
+    <br>
+    <a href="index.php">Sudah punya akun? Login</a>
+</div>
 
 </body>
 </html>

@@ -18,23 +18,37 @@ if (isset($_POST['login'])) {
     $result = mysqli_stmt_get_result($stmt);
     $data = mysqli_fetch_assoc($result);
 
-    if ($data) {
+    if ($data && password_verify($password, $data['password'])) {
 
-        if (
-            password_verify($password, $data['password']) ||
-            $password === $data['password']
-        ) {
-            $_SESSION['user'] = $data['username'];
-            $_SESSION['role'] = $data['role'];
+        session_regenerate_id(true);
 
+        $_SESSION['user'] = $data['username'];
+        $_SESSION['role'] = strtolower(trim($data['role']));
+
+        if (in_array($_SESSION['role'], ['admin', 'administrator', 'petugas'])) {
             header("Location: dashboard.php");
             exit;
         }
+
+        if ($_SESSION['role'] === 'pelanggan') {
+            header("Location: pelanggan.php");
+            exit;
+        }
+
+        session_unset();
+        session_destroy();
+
+        echo "<script>
+            alert('Role akun tidak dikenali!');
+            window.location='index.php';
+        </script>";
+        exit;
     }
 
     echo "<script>
         alert('Username atau password salah!');
         window.location='index.php';
     </script>";
+    exit;
 }
 ?>
